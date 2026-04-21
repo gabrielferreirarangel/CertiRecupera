@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import api from '../services/api.js';
 
 const Detalhes = () => {
-  const { id } = useParams(); // Pega o ID da URL
+  const { id } = useParams();
   const [cliente, setCliente] = useState(null);
 
   useEffect(() => {

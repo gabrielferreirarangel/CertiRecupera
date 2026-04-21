@@ -61,7 +61,7 @@ export default function Listagem() {
                 <td>{vencimento.clienteId?.numeroCorreto}</td>
                 <td>
                   <button onClick={() => avisar(vencimento._id)}>Avisar</button>
-                  {}<Link to={`/cliente/${vencimento.clienteId?._id}`}>
+                  <Link to={`/cliente/${vencimento.clienteId?._id}`}>
                     <button>Detalhes</button>
                   </Link>
                 </td>
