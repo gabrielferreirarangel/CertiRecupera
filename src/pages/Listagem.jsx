@@ -1,23 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import api from '../services/api.js';
+import useVencimentos from '../hooks/useVencimentos.js';
+import { Link } from 'react-router-dom';
 
 export default function Listagem() {
-  const [vencimentos, setVencimentos] = useState([]);
-  const [loading, setLoading] = useState(false);
 
-  const carregar = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get('/vencimentos');
-      setVencimentos(res.data);
-    } catch (err) {
-      alert('Erro ao carregar');
-    }
-    setLoading(false);
-  };
+  const { vencimentos, loading, carregar } = useVencimentos();
+  
+  const [processando, setProcessando] = useState(false);
 
   const processar = async () => {
-    setLoading(true);
+    setProcessando(true);
     try {
       const res = await api.post('/vencimentos/importar');
       alert(`${res.data.resultado.inseridos} inseridos`);
@@ -25,7 +18,7 @@ export default function Listagem() {
     } catch (err) {
       alert('Erro ao processar');
     }
-    setLoading(false);
+    setProcessando(false);
   };
 
   const avisar = async (id) => {
@@ -37,15 +30,11 @@ export default function Listagem() {
     }
   };
 
-  useEffect(() => {
-    carregar();
-  }, []);
-
   return (
     <div>
       <h2>Vencimentos</h2>
-      <button onClick={processar} disabled={loading}>
-        {loading ? 'Processando...' : 'Processar'}
+      <button onClick={processar} disabled={processando || loading}>
+        {processando ? 'Processando...' : 'Processar'}
       </button>
 
       {loading ? (
@@ -53,7 +42,7 @@ export default function Listagem() {
       ) : vencimentos.length === 0 ? (
         <p>Nenhum dado</p>
       ) : (
-        <table border="1">
+        <table border="5">
           <thead>
             <tr>
               <th>Cliente</th>
@@ -72,6 +61,9 @@ export default function Listagem() {
                 <td>{vencimento.clienteId?.numeroCorreto}</td>
                 <td>
                   <button onClick={() => avisar(vencimento._id)}>Avisar</button>
+                  {}<Link to={`/cliente/${vencimento.clienteId?._id}`}>
+                    <button>Detalhes</button>
+                  </Link>
                 </td>
               </tr>
             ))}
